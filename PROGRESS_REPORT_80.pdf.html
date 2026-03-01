@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Sentry – Progress Report (80%)</title>
+  <style>
+    @media print {
+      body { margin: 0; padding: 1.2in; }
+      .page-break { page-break-before: always; }
+      thead { display: table-header-group; }
+      tr { page-break-inside: avoid; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #1a1a1a;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+    .cover {
+      text-align: center;
+      padding: 48px 0 56px;
+      border-bottom: 2px solid #1a365d;
+      margin-bottom: 32px;
+    }
+    .cover h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      color: #1a365d;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .cover .subtitle {
+      font-size: 12pt;
+      color: #4a5568;
+      margin: 0 0 24px;
+    }
+    .meta {
+      font-size: 10pt;
+      color: #718096;
+      margin-top: 20px;
+    }
+    .meta span { margin: 0 12px; }
+    h2 {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #1a365d;
+      margin: 28px 0 12px;
+      padding-bottom: 4px;
+    }
+    h3 {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 20px 0 8px;
+    }
+    p { margin: 0 0 10px; }
+    .summary-box {
+      background: #f7fafc;
+      border-left: 4px solid #2b6cb0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 10.5pt;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10pt;
+      margin: 12px 0 20px;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background: #edf2f7;
+      font-weight: 600;
+      color: #2d3748;
+    }
+    tr:nth-child(even) { background: #fafafa; }
+    ul { margin: 8px 0 16px; padding-left: 22px; }
+    li { margin: 4px 0; }
+    strong { color: #2d3748; }
+    code, .path { font-family: 'Consolas', 'Monaco', monospace; font-size: 9.5pt; background: #edf2f7; padding: 1px 6px; border-radius: 3px; }
+    pre {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 14px 18px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 9.5pt;
+      margin: 12px 0 20px;
+    }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 24px 0; }
+    .footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 9pt;
+      color: #718096;
+      text-align: center;
+    }
+    .status-done { color: #276749; }
+    .status-partial { color: #b7791f; }
+  </style>
+</head>
+<body>
+
+  <div class="cover">
+    <h1>Crypto Sentry</h1>
+    <p class="subtitle">Progress Report — 80% Complete</p>
+    <p class="meta">
+      <span><strong>Project:</strong> Real-Time Market Surveillance Terminal</span><br />
+      <span><strong>Reference:</strong> Bitbash Crypto Sentry — Comprehensive Intern Development Guide</span><br />
+      <span><strong>Date:</strong> [Add date when you share]</span><br />
+      <span><strong>Status:</strong> Approximately 80% of scope completed (understanding + development)</span>
+    </p>
+  </div>
+
+  <h2>Executive Summary</h2>
+  <div class="summary-box">
+    This report documents progress on the Crypto Sentry project against the client's development guide. The majority of the doc has been implemented: two-server architecture (§4, §7), full setup and environment (§6), database with code-first migrations (§13), Express surveillance engine with 30s polling and 2% flash-crash detection with idempotency (§11, §15), NextAuth with Credentials and optional Google (§14), all API endpoints from the doc (§9), and the full Next.js terminal UI including dashboard with real-time polling and status badges (§12), watchlist (§16), alerts with filter (§12.1), market page with search (§12.1), and operator onboarding with spotlight guide (§17). Data flows (§8), security (auth + authorization on watchlist), stale-data handling (§12.4), and dual data source (Express cache + DB fallback for alerts) are in place. Remaining ~20% is production hardening (§19): structured logging, extended stability run, rate limiting on auth endpoints, and deployment checklist.
+  </div>
+
+  <h2>1. Document Coverage — Section-by-Section</h2>
+  <table>
+    <thead>
+      <tr><th>Section</th><th>Title</th><th>Status</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Project Overview</td><td class="status-done">Done</td><td>Goals (real-time surveillance, 2% detection, watchlist, mission-control UI, onboarding) implemented</td></tr>
+      <tr><td>2</td><td>What You'll Learn</td><td class="status-done">Done</td><td>Two servers, polling, flash-crash logic, Prisma, NextAuth, Framer Motion applied</td></tr>
+      <tr><td>3</td><td>Technical Foundation</td><td class="status-done">Done</td><td>Stack: Next.js 14+, TypeScript, Tailwind, Framer Motion, Lucide; Express, Prisma, PostgreSQL, NextAuth; CoinGecko</td></tr>
+      <tr><td>4</td><td>Core Concepts</td><td class="status-done">Done</td><td>Why two servers (§4.1), polling vs streaming (§4.2), flash-crash algorithm (§4.3), idempotency (§4.4), server vs client state (§4.5)</td></tr>
+      <tr><td>5</td><td>Architecture Overview</td><td class="status-done">Done</td><td>Express + Next.js + PostgreSQL + CoinGecko; data flow from market to user screen</td></tr>
+      <tr><td>6</td><td>Setup & Environment</td><td class="status-done">Done</td><td>Prerequisites, env vars (.env.local), DB setup (Prisma init, migrate), dev:all script</td></tr>
+      <tr><td>7</td><td>Runtime Components</td><td class="status-done">Done</td><td>Express engine (server.js) and Next.js app; responsibilities and key functions</td></tr>
+      <tr><td>8</td><td>Data & State Flow</td><td class="status-done">Done</td><td>Auth flow (§8.1), dashboard data flow (§8.2), watchlist flow (§8.3) implemented</td></tr>
+      <tr><td>9</td><td>Frontend ↔ Backend Communication Map</td><td class="status-done">Done</td><td>All endpoints: signup, signin, prices, watchlist GET/POST/DELETE, alerts with limit</td></tr>
+      <tr><td>10</td><td>Backend ↔ Market Data Flow</td><td class="status-done">Done</td><td>CoinGecko URL and params; Express polling loop every 30s</td></tr>
+      <tr><td>11</td><td>Express Surveillance Engine (Deep Dive)</td><td class="status-done">Done</td><td>§11.1–11.4: responsibilities; polling 30s + retry/rate-limit; detection + idempotency; cache with status</td></tr>
+      <tr><td>12</td><td>Next.js Terminal (Deep Dive)</td><td class="status-done">Done</td><td>§12.1–12.4: six responsibilities; API routes; polling 5s, clearInterval, stale 60s, STABLE/alert badges</td></tr>
+      <tr><td>13</td><td>Database Schema & Prisma ORM</td><td class="status-done">Done</td><td>Code-first; User, Watchlist, CryptoAlert; relations; migrations; singleton Prisma client</td></tr>
+      <tr><td>14</td><td>Authentication & Authorization</td><td class="status-done">Done</td><td>NextAuth Credentials + Google; JWT; signup with bcrypt; session verification; auth on watchlist</td></tr>
+      <tr><td>15</td><td>Flash Crash Detection System</td><td class="status-done">Done</td><td>Baseline comparison, 2% threshold, 60s cooldown, DB write, no duplicate alerts</td></tr>
+      <tr><td>16</td><td>Watchlist Management System</td><td class="status-done">Done</td><td>Add/remove, persistence in DB, watchlist page, optimistic UI, DELETE by id (§9)</td></tr>
+      <tr><td>17</td><td>User Onboarding (Spotlight Guide)</td><td class="status-done">Done</td><td>Spotlight overlay, steps (dashboard-stats, nav-alerts, watchlist, market, profile), localStorage completion</td></tr>
+      <tr><td>18</td><td>Development Phases (Week Plan)</td><td class="status-partial">Partially</td><td>Days 1–6 scope largely covered; Day 7 stability testing in remaining 20%</td></tr>
+      <tr><td>19</td><td>Production Requirements</td><td class="status-partial">Partial</td><td>Error handling and fallbacks in place; structured logging and 24hr run in remaining 20%</td></tr>
+      <tr><td>20</td><td>Success Guidelines</td><td class="status-partial">Partial</td><td>Technical and UX criteria met; operational (logging, deployment doc) in remaining 20%</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Completed Work — Detailed (with doc references)</h2>
+
+  <h3>2.1 Project setup and environment (§3, §6)</h3>
+  <ul>
+    <li><strong>Stack:</strong> Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, Framer Motion, Lucide React; Express 5; Prisma; PostgreSQL; NextAuth (Auth.js v5); CoinGecko API.</li>
+    <li><strong>Env:</strong> <code>.env.local</code> holds DATABASE_URL, AUTH_SECRET, NEXTAUTH_SECRET, NEXTAUTH_URL, SURVEILLANCE_PORT, NEXT_PUBLIC_SURVEILLANCE_URL; optional GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET.</li>
+    <li><strong>Scripts:</strong> dev (Next.js), dev:server (Express), dev:all (concurrently both), db:migrate, db:push, db:generate, db:studio, db:seed.</li>
+    <li><strong>Prisma and env:</strong> <code>scripts/prisma-env.js</code> loads .env.local so all DB commands use the same env.</li>
+  </ul>
+
+  <h3>2.2 Database (§13)</h3>
+  <ul>
+    <li><strong>Approach:</strong> Code-first. Single source of truth: <code>prisma/schema.prisma</code>.</li>
+    <li><strong>User:</strong> id (cuid), email (unique), name, password (optional for Google), createdAt, updatedAt; relations to Watchlist and CryptoAlert.</li>
+    <li><strong>Watchlist:</strong> id, coinId, coinName, symbol, userId (FK → User, onDelete Cascade), createdAt; @@unique([userId, coinId]).</li>
+    <li><strong>CryptoAlert:</strong> id, coinId, coinName, symbol, dropPercent, priceBefore, priceAfter, triggeredAt, userId (optional FK).</li>
+    <li><strong>Migrations:</strong> npm run db:migrate; DB viewable via PgAdmin (crypto_sentry) or npm run db:studio.</li>
+    <li><strong>Seed:</strong> prisma/seed.ts — demo@cryptosentry.com / demo1234.</li>
+    <li><strong>Client:</strong> src/lib/prisma.ts — singleton PrismaClient (§13.6).</li>
+  </ul>
+
+  <h3>2.3 Express surveillance engine (§7, §10, §11)</h3>
+  <ul>
+    <li><strong>File:</strong> server.js (port 4000). Dependencies: express, cors, axios, @prisma/client, dotenv.</li>
+    <li><strong>MemoryCache (§11.4):</strong> prices, baselines, alerts (last 100); updatePrice, getAll, getAlerts(limit), addAlert, getActiveAlertCoinIds().</li>
+    <li><strong>FlashCrashDetector (§11.3, §15):</strong> Baseline per coin; drop ≥2% → idempotency check (Prisma, 60s) → prisma.cryptoAlert.create + cache.addAlert.</li>
+    <li><strong>Coin list:</strong> COINS array (15 CoinGecko ids); single batched request per cycle (§10.2).</li>
+    <li><strong>fetchWithRetry (§11.2):</strong> Exponential backoff on 429/error; up to 3 retries.</li>
+    <li><strong>Polling:</strong> fetchMarketData() on startup; setInterval(fetchMarketData, 30000) (§10.2).</li>
+    <li><strong>Routes:</strong> GET /api/prices (cache + status stable/alert), GET /api/alerts (?limit=50), GET /api/health, GET /cache.</li>
+  </ul>
+
+  <h3>2.4 Authentication and authorization (§14)</h3>
+  <ul>
+    <li><strong>NextAuth:</strong> src/auth.ts. Providers: Credentials (email/password), Google (optional).</li>
+    <li><strong>Credentials authorize (§14.4–14.5):</strong> findUnique by email; bcrypt.compare; return { id, email, name }; null if no password (Google-only).</li>
+    <li><strong>Google:</strong> JWT callback upserts User by email; token.id = DB user id.</li>
+    <li><strong>Session:</strong> JWT strategy (§14.2). Custom sign-in page /login (§14.3). Middleware protects (app) routes (§14.6).</li>
+    <li><strong>Signup:</strong> POST /api/signup — validate, bcrypt.hash(12), prisma.user.create; 201 or 409 (§14.4).</li>
+  </ul>
+
+  <h3>2.5 API routes — full list (§9, §12.3)</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Path</th><th>Handler</th><th>Auth</th><th>Doc</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>POST</td><td>/api/signup</td><td>signup/route.ts</td><td>No</td><td>§9</td></tr>
+      <tr><td>—</td><td>/api/auth/*</td><td>auth/[...nextauth]/route.ts</td><td>—</td><td>§9</td></tr>
+      <tr><td>GET</td><td>/api/prices</td><td>prices/route.ts</td><td>No</td><td>§9</td></tr>
+      <tr><td>GET</td><td>/api/alerts</td><td>alerts/route.ts</td><td>No</td><td>§9</td></tr>
+      <tr><td>GET</td><td>/api/watchlist</td><td>watchlist/route.ts</td><td>Yes</td><td>§9</td></tr>
+      <tr><td>POST</td><td>/api/watchlist</td><td>watchlist/route.ts</td><td>Yes</td><td>§9</td></tr>
+      <tr><td>DELETE</td><td>/api/watchlist?coinId=</td><td>watchlist/route.ts</td><td>Yes</td><td>Remove by coin</td></tr>
+      <tr><td>DELETE</td><td>/api/watchlist/[id]</td><td>watchlist/[id]/route.ts</td><td>Yes</td><td>§9 Remove by entry id</td></tr>
+    </tbody>
+  </table>
+  <p><strong>alerts/route.ts:</strong> Fallback to prisma.cryptoAlert.findMany when Express down (§12.3 dual data source). <strong>watchlist/[id]:</strong> Verifies entry belongs to session.user.id (§14.7).</p>
+
+  <h3>2.6 Data flows (§8)</h3>
+  <ul>
+    <li><strong>Auth (§8.1):</strong> Login form → NextAuth signIn → authorize → JWT cookie → protected routes read session.</li>
+    <li><strong>Dashboard (§8.2):</strong> Client fetches /api/prices and /api/watchlist; setInterval(fetch, 5000); clearInterval on unmount (§12.4). Proxy to Express; status per coin; STABLE/alert and stale warning if &gt;60s.</li>
+    <li><strong>Watchlist (§8.3, §16):</strong> Star → POST/DELETE watchlist; server CRUD; watchlist page shows user's starred coins.</li>
+  </ul>
+
+  <h3>2.7 Next.js UI — pages and components (§12.1)</h3>
+  <ul>
+    <li><strong>Pages:</strong> layout.tsx (SessionProvider); page.tsx (redirect); login, signup; (app)/layout.tsx (auth check, Sidebar); dashboard (5s poll, AnimatedPriceCard, StaleDataBanner, OnboardingSpotlight), watchlist, alerts (filter by asset), market (search).</li>
+    <li><strong>Sidebar:</strong> nav-dashboard, nav-market, nav-watchlist, nav-alerts, nav-profile; alert badge; signOut.</li>
+    <li><strong>AnimatedPriceCard (§12.4):</strong> STABLE (green) / Protocol violation (red) badge; border and glow; price; watchlist star.</li>
+    <li><strong>StaleDataBanner (§12.4):</strong> When lastUpdate &gt;60s or offline; refresh button.</li>
+    <li><strong>OnboardingSpotlight (§17):</strong> Steps: Welcome, dashboard-stats, nav-alerts, nav-watchlist, nav-market, nav-profile; localStorage; Skip/Next/Finish.</li>
+  </ul>
+
+  <h3>2.8 Security and validation (§12.3, §14)</h3>
+  <ul>
+    <li>Watchlist: all endpoints require session; DELETE [id] verifies entry belongs to session.user.id (§14.7).</li>
+    <li>Signup: email/password required; duplicate 409; bcrypt rounds 12.</li>
+    <li>Credentials login: generic "invalid credentials"; user.password null check for Google-only.</li>
+  </ul>
+
+  <h3>2.9 Doc alignment — success criteria (partial §20)</h3>
+  <ul>
+    <li><strong>Technical:</strong> Two servers; 2% detection with idempotency; alerts in DB; watchlist persisted; TypeScript/Prisma types.</li>
+    <li><strong>UX:</strong> Dashboard &lt;5s refresh; STABLE/alert badges; stale warning; onboarding dismissible; watchlist add/remove.</li>
+    <li><strong>Operational:</strong> README and EVALUATION_GUIDE; remaining: structured logging (§19.2), 24hr stability (§19.1), deployment checklist (§19.4).</li>
+  </ul>
+
+  <h2>3. Remaining Work (~20%)</h2>
+  <ul>
+    <li><strong>§19.1</strong> — Run Express 24+ hours; confirm memory stable.</li>
+    <li><strong>§19.2</strong> — Structured logging format (timestamp, level, component, context).</li>
+    <li><strong>§19.4</strong> — Rate limiting on signin/signup; deployment checklist (env, HTTPS, secrets).</li>
+    <li><strong>§18 Day 7</strong> — Formal stability and deployment prep; troubleshooting in README.</li>
+    <li><strong>Optional:</strong> Server Component initial data for dashboard (§12.2).</li>
+  </ul>
+
+  <h2>4. How to run</h2>
+  <pre># Database (once)
+createdb crypto_sentry
+# .env.local: DATABASE_URL, AUTH_SECRET, NEXTAUTH_SECRET, NEXTAUTH_URL, etc.
+
+npm run db:migrate    # create/update tables
+npm run db:seed       # optional: demo@cryptosentry.com / demo1234
+
+# Application
+npm run dev:all       # Express on 4000, Next.js on 3000/3003</pre>
+  <p><strong>Surveillance engine:</strong> http://localhost:4000 (health: /api/health). <strong>App:</strong> http://localhost:3003 (set NEXTAUTH_URL). <strong>DB UI:</strong> npm run db:studio or PgAdmin → database crypto_sentry.</p>
+
+  <h2>5. Summary</h2>
+  <div class="summary-box">
+    <strong>Doc coverage:</strong> Sections 1–17 implemented in line with the guide; §18–20 partially (stability and production in remaining 20%).<br /><br />
+    <strong>Deliverables:</strong> Full two-server setup, code-first DB, auth (Credentials + Google), surveillance engine (30s poll, 2% detection, idempotency, DB alerts, cache with status), all doc APIs, full terminal UI (dashboard, watchlist, alerts, market, onboarding), data flows, and security checks. <strong>Remaining:</strong> structured logging, 24hr stability run, auth rate limiting, deployment checklist.
+  </div>
+
+  <hr />
+  <div class="footer">
+    Crypto Sentry — Progress Report (80% Complete) | Bitbash Development Guide | Confidential
+  </div>
+
+</body>
+</html>
